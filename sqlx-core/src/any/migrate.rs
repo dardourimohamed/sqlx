@@ -65,36 +65,7 @@ impl MigrateDatabase for Any {
 
 impl Migrate for AnyConnection {
     fn ensure_migrations_table(&mut self) -> BoxFuture<'_, Result<(), MigrateError>> {
-        match &mut self.0 {
-            #[cfg(feature = "postgres")]
-            AnyConnectionKind::Postgres(conn) => conn.ensure_migrations_table(),
-
-            #[cfg(feature = "sqlite")]
-            AnyConnectionKind::Sqlite(conn) => conn.ensure_migrations_table(),
-
-            #[cfg(feature = "mysql")]
-            AnyConnectionKind::MySql(conn) => conn.ensure_migrations_table(),
-
-            #[cfg(feature = "mssql")]
-            AnyConnectionKind::Mssql(_conn) => unimplemented!(),
-        }
-    }
-
-    #[allow(deprecated)]
-    fn version(&mut self) -> BoxFuture<'_, Result<Option<(i64, bool)>, MigrateError>> {
-        match &mut self.0 {
-            #[cfg(feature = "postgres")]
-            AnyConnectionKind::Postgres(conn) => conn.version(),
-
-            #[cfg(feature = "sqlite")]
-            AnyConnectionKind::Sqlite(conn) => conn.version(),
-
-            #[cfg(feature = "mysql")]
-            AnyConnectionKind::MySql(conn) => conn.version(),
-
-            #[cfg(feature = "mssql")]
-            AnyConnectionKind::Mssql(_conn) => unimplemented!(),
-        }
+        self.backend
     }
 
     fn dirty_version(&mut self) -> BoxFuture<'_, Result<Option<i64>, MigrateError>> {
@@ -110,29 +81,6 @@ impl Migrate for AnyConnection {
 
             #[cfg(feature = "mssql")]
             AnyConnectionKind::Mssql(_conn) => unimplemented!(),
-        }
-    }
-
-    #[allow(deprecated)]
-    fn validate<'e: 'm, 'm>(
-        &'e mut self,
-        migration: &'m Migration,
-    ) -> BoxFuture<'m, Result<(), MigrateError>> {
-        match &mut self.0 {
-            #[cfg(feature = "postgres")]
-            AnyConnectionKind::Postgres(conn) => conn.validate(migration),
-
-            #[cfg(feature = "sqlite")]
-            AnyConnectionKind::Sqlite(conn) => conn.validate(migration),
-
-            #[cfg(feature = "mysql")]
-            AnyConnectionKind::MySql(conn) => conn.validate(migration),
-
-            #[cfg(feature = "mssql")]
-            AnyConnectionKind::Mssql(_conn) => {
-                let _ = migration;
-                unimplemented!()
-            }
         }
     }
 

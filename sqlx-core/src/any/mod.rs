@@ -2,15 +2,6 @@
 
 use crate::executor::Executor;
 
-#[macro_use]
-mod decode;
-
-#[macro_use]
-mod encode;
-
-#[macro_use]
-mod r#type;
-
 mod arguments;
 pub(crate) mod column;
 mod connection;
@@ -26,6 +17,7 @@ pub(crate) mod type_info;
 pub mod types;
 pub(crate) mod value;
 
+mod driver;
 #[cfg(feature = "migrate")]
 mod migrate;
 
@@ -33,11 +25,8 @@ pub use arguments::{AnyArgumentBuffer, AnyArguments};
 pub use column::{AnyColumn, AnyColumnIndex};
 pub use connection::AnyConnection;
 // Used internally in `sqlx-macros`
-#[doc(hidden)]
-pub use connection::AnyConnectionKind;
+
 pub use database::Any;
-pub use decode::AnyDecode;
-pub use encode::AnyEncode;
 pub use kind::AnyKind;
 pub use options::AnyConnectOptions;
 pub use query_result::AnyQueryResult;
